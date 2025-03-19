@@ -1,31 +1,69 @@
-Date,Region,Category,Product,Sales,Profit,Quantity
+Date,Region,Category,Product,Sales,Profit,Units
 2023-01-01,North,Electronics,Laptop,1200.50,240.10,5
 2023-01-02,South,Furniture,Chair,450.75,90.15,10
 2023-01-03,East,Office Supplies,Paper,75.25,15.05,20
 2023-01-04,West,Electronics,Phone,800.00,160.00,8
-2023-01-05,North,Furniture,Desk,550.25,110.05,4
+2023-01-05,North,Electronics,Laptop,1200.50,350.25,3
 2023-01-06,South,Office Supplies,Pens,25.50,5.10,15
 2023-01-07,East,Electronics,Tablet,600.00,120.00,6
 2023-01-08,West,Furniture,Bookcase,350.75,70.15,3
 2023-01-09,North,Office Supplies,Stapler,15.25,3.05,10
-2023-01-10,South,Electronics,Monitor,300.50,60.10,4
+2023-01-10,South,Electronics,Smartphone,850.75,220.50,5
+2023-01-15,East,Electronics,Headphones,325.40,125.80,8
+2023-01-20,West,Electronics,Tablet,650.00,180.30,4
 2023-02-01,East,Furniture,Sofa,1500.00,300.00,2
 2023-02-02,West,Office Supplies,Notebook,30.25,6.05,25
 2023-02-03,North,Electronics,Printer,250.75,50.15,3
 2023-02-04,South,Furniture,Table,400.00,80.00,5
-2023-02-05,East,Office Supplies,Binder,45.50,9.10,18
-2023-02-06,West,Electronics,Keyboard,125.25,25.05,7
-2023-02-07,North,Furniture,Filing Cabinet,275.00,55.00,2
-2023-02-08,South,Office Supplies,Scissors,12.50,2.50,20
-2023-02-09,East,Electronics,Mouse,35.75,7.15,15
-2023-02-10,West,Furniture,Chair,475.50,95.10,12
+2023-02-05,North,Home,Chair,225.80,75.30,6
+2023-02-06,East,Office Supplies,Binder,45.50,9.10,18
+2023-02-07,West,Electronics,Keyboard,125.25,25.05,7
+2023-02-08,North,Furniture,Filing Cabinet,275.00,55.00,2
+2023-02-09,South,Office Supplies,Scissors,12.50,2.50,20
+2023-02-10,South,Home,Table,550.60,160.40,3
+2023-02-15,East,Home,Lamp,120.30,45.50,10
+2023-02-20,West,Home,Sofa,1100.75,330.25,2
 2023-03-01,North,Office Supplies,Paper Clips,5.25,1.05,50
 2023-03-02,South,Electronics,Headphones,150.00,30.00,10
 2023-03-03,East,Furniture,Desk Lamp,55.75,11.15,8
 2023-03-04,West,Office Supplies,Calendar,18.50,3.70,15
-2023-03-05,North,Electronics,Speakers,175.25,35.05,6
-2023-03-06,South,Furniture,Ottoman,125.00,25.00,4
-2023-03-07,East,Office Supplies,Sticky Notes,8.75,1.75,30
-2023-03-08,West,Electronics,External Hard Drive,95.50,19.10,5
-2023-03-09,North,Furniture,Armchair,325.75,65.15,3
-2023-03-10,South,Office Supplies,Markers,15.00,3.00,20 
+2023-03-05,North,Clothing,Shirt,155.90,65.40,12
+2023-03-06,South,Clothing,Pants,245.50,90.20,8
+2023-03-07,East,Clothing,Jacket,350.25,120.60,5
+2023-03-08,West,Clothing,Shoes,280.40,95.30,7
+2023-03-09,North,Electronics,Speaker,180.60,60.20,6
+2023-03-10,South,Electronics,Camera,720.30,240.10,3
+2023-03-15,East,Electronics,Watch,450.75,150.25,9
+2023-03-16,West,Electronics,Earbuds,130.90,50.40,15
+2023-03-17,North,Home,Desk,320.50,100.30,4
+2023-03-18,South,Home,Bookshelf,275.20,90.60,5
+2023-03-19,East,Home,Rug,195.40,70.20,8
+2023-03-20,West,Home,Mirror,150.60,55.30,6
+2023-04-05,North,Clothing,Dress,220.30,80.10,7
+2023-04-06,South,Clothing,Suit,580.75,200.30,3
+2023-04-07,East,Clothing,Hat,45.90,20.40,12
+2023-04-08,West,Clothing,Scarf,65.50,25.20,9
+2023-04-09,North,Electronics,External Hard Drive,95.50,19.10,5
+2023-04-10,South,Electronics,Camera,720.30,240.10,3
+2023-04-15,East,Electronics,Watch,450.75,150.25,9
+2023-04-16,West,Electronics,Earbuds,130.90,50.40,15
+2023-04-17,North,Home,Desk,320.50,100.30,4
+2023-04-18,South,Home,Bookshelf,275.20,90.60,5
+2023-04-19,East,Home,Rug,195.40,70.20,8
+2023-04-20,West,Home,Mirror,150.60,55.30,6
+2023-05-05,North,Clothing,Dress,220.30,80.10,7
+2023-05-06,South,Clothing,Suit,580.75,200.30,3
+2023-05-07,East,Clothing,Hat,45.90,20.40,12
+2023-05-08,West,Clothing,Scarf,65.50,25.20,9
+2023-05-09,North,Electronics,External Hard Drive,95.50,19.10,5
+2023-05-10,South,Electronics,Camera,720.30,240.10,3
+2023-05-15,East,Electronics,Watch,450.75,150.25,9
+2023-05-16,West,Electronics,Earbuds,130.90,50.40,15
+2023-05-17,North,Home,Desk,320.50,100.30,4
+2023-05-18,South,Home,Bookshelf,275.20,90.60,5
+2023-05-19,East,Home,Rug,195.40,70.20,8
+2023-05-20,West,Home,Mirror,150.60,55.30,6
+2023-06-05,North,Clothing,Dress,220.30,80.10,7
+2023-06-06,South,Clothing,Suit,580.75,200.30,3
+2023-06-07,East,Clothing,Hat,45.90,20.40,12
+2023-06-08,West,Clothing,Scarf,65.50,25.20,9 

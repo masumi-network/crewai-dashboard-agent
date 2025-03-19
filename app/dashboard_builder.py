@@ -12,6 +12,9 @@ from pathlib import Path
 import jinja2
 from typing import Dict, List, Any, Optional, Tuple, Union
 import re
+import socket
+
+from .templates.base_template import TemplateRenderer
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -37,93 +40,161 @@ class DashboardBuilder:
         # Template environment for generating dashboard files
         template_loader = jinja2.FileSystemLoader(searchpath=os.path.join(os.path.dirname(__file__), "templates"))
         self.template_env = jinja2.Environment(loader=template_loader)
+        
+        # Initialize template renderer
+        self.template_renderer = TemplateRenderer()
     
-    def download_data(self, url: str) -> pd.DataFrame:
+    def _download_data(self, data_url):
         """
-        Download data from URL and convert to pandas DataFrame.
+        Download data from a URL.
         
         Args:
-            url (str): URL to download data from (CSV, JSON, etc.)
+            data_url (str): URL to the data file
             
         Returns:
-            pd.DataFrame: DataFrame containing the data
+            bytes: Raw data content
         """
-        logger.info(f"Downloading data from {url}")
+        logger.info(f"Downloading data from {data_url}")
         
         try:
-            # Determine file type from URL
-            file_extension = os.path.splitext(url)[1].lower()
-            
-            # Download the file
-            response = requests.get(url, stream=True)
+            response = requests.get(data_url)
             response.raise_for_status()
-            
-            # Create a temporary file
-            with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as tmp_file:
-                tmp_file_path = tmp_file.name
-                for chunk in response.iter_content(chunk_size=8192):
-                    tmp_file.write(chunk)
-            
-            # Read the file into a DataFrame based on file type
-            if file_extension == '.csv':
-                df = pd.read_csv(tmp_file_path)
-            elif file_extension in ['.json', '.jsonl']:
-                df = pd.read_json(tmp_file_path)
-            elif file_extension in ['.xlsx', '.xls']:
-                df = pd.read_excel(tmp_file_path)
-            else:
-                raise ValueError(f"Unsupported file format: {file_extension}")
-                
-            # Clean up the temporary file
-            os.unlink(tmp_file_path)
-            
-            return df
-            
-        except Exception as e:
+            return response.content
+        except requests.exceptions.RequestException as e:
             logger.error(f"Error downloading data: {str(e)}")
-            raise
-    
-    def create_dashboard(self, 
-                         data_url: str,
-                         dashboard_config: Dict[str, Any]) -> Tuple[str, str]:
+            raise Exception(f"Failed to download data from {data_url}: {str(e)}")
+            
+    def _load_data(self, data_content):
         """
-        Create a Streamlit dashboard from a data URL and configuration.
+        Load data content into a pandas DataFrame.
         
         Args:
-            data_url (str): URL to the data file (CSV, JSON, etc.)
-            dashboard_config (dict): Configuration for the dashboard
-                - title (str): Dashboard title
-                - description (str): Dashboard description
-                - metrics (list): List of metrics to display
-                - charts (list): List of chart configurations
-                - filters (list): List of filter configurations
+            data_content (bytes): Raw data content
+            
+        Returns:
+            pd.DataFrame: Loaded data frame
+        """
+        import io
+        
+        try:
+            # Try to load as CSV
+            return pd.read_csv(io.BytesIO(data_content))
+        except Exception as csv_error:
+            logger.warning(f"Could not load as CSV: {str(csv_error)}")
+            
+            try:
+                # Try to load as JSON
+                return pd.read_json(io.BytesIO(data_content))
+            except Exception as json_error:
+                logger.warning(f"Could not load as JSON: {str(json_error)}")
                 
+                # Try other formats if needed
+                # ...
+                
+                raise Exception("Could not load data: unsupported format")
+    
+    def create_dashboard(self, data_url, dashboard_config=None):
+        """
+        Create a new dashboard based on data and configuration.
+        
+        Args:
+            data_url (str): URL to the data source (CSV, JSON, etc.)
+            dashboard_config (dict, optional): Dashboard configuration including title, charts, metrics, etc.
+            
         Returns:
             tuple: (dashboard_id, dashboard_path)
         """
-        # Generate a unique ID for the dashboard
-        dashboard_id = str(uuid.uuid4())[:8]
-        dashboard_name = dashboard_config.get('title', 'dashboard').lower().replace(' ', '_')
-        dashboard_filename = f"{dashboard_name}_{dashboard_id}.py"
-        dashboard_path = os.path.join(self.dashboards_dir, dashboard_filename)
-        
-        logger.info(f"Creating dashboard {dashboard_id} at {dashboard_path}")
-        
+        # Default empty config if None provided
+        if dashboard_config is None:
+            dashboard_config = {}
+            
+        # Check for auto-configure flag
+        auto_configure = dashboard_config.get('auto_configure', True)
+            
+        # Download and analyze data
         try:
-            # Download the data
-            df = self.download_data(data_url)
+            data = self._download_data(data_url)
+            df = self._load_data(data)
             
-            # Pre-process data if needed (convert date columns to datetime, etc.)
-            df = self._preprocess_data(df, dashboard_config)
+            # Auto-generate dashboard elements if needed
+            if auto_configure or 'title' not in dashboard_config or not dashboard_config['title']:
+                # Generate title if not provided
+                dashboard_config['title'] = dashboard_config.get('title') or f"Data Dashboard - {pd.Timestamp.now().strftime('%Y-%m-%d')}"
+                
+                # Generate description if not provided
+                if 'description' not in dashboard_config or not dashboard_config['description']:
+                    dashboard_config['description'] = f"Automatically generated dashboard for {data_url}"
+                
+                # Generate metrics if not provided
+                if 'metrics' not in dashboard_config or not dashboard_config['metrics']:
+                    dashboard_config['metrics'] = self._suggest_metrics(df)
+                
+                # Generate charts if not provided
+                if 'charts' not in dashboard_config or not dashboard_config['charts']:
+                    dashboard_config['charts'] = self._suggest_chart_types(df)
+                
+                # Generate filters if not provided
+                if 'filters' not in dashboard_config or not dashboard_config['filters']:
+                    dashboard_config['filters'] = self._suggest_filters(df)
+                    
+                # Set up style if not provided
+                if 'style' not in dashboard_config:
+                    dashboard_config['style'] = {
+                        'theme': 'default',
+                        'layout': 'standard',
+                        'columns': 2,
+                        'color_scheme': 'default'
+                    }
             
-            # Generate the dashboard file from template
-            self._generate_dashboard_file(dashboard_path, data_url, dashboard_config)
+            # Generate a unique dashboard ID
+            dashboard_id = str(uuid.uuid4())[:8]
+            
+            # Clean title for filename
+            clean_title = re.sub(r'[^\w\s-]', '', dashboard_config['title']).strip().lower()
+            clean_title = re.sub(r'[-\s]+', '-', clean_title)
+            
+            # Create a unique filename
+            filename = f"{clean_title}-{dashboard_id}"
+            
+            # Generate dashboard HTML
+            dashboard_html = self.template_renderer.render_dashboard(
+                title=dashboard_config['title'],
+                description=dashboard_config['description'],
+                df=df,
+                charts_config=dashboard_config.get('charts', []),
+                metrics_config=dashboard_config.get('metrics', []),
+                filters_config=dashboard_config.get('filters', []),
+                style_config=dashboard_config.get('style', {})
+            )
+            
+            # Create dashboard directory if it doesn't exist
+            os.makedirs(self.dashboards_dir, exist_ok=True)
+            
+            # Save dashboard HTML
+            dashboard_path = os.path.join(self.dashboards_dir, f"{filename}")
+            os.makedirs(dashboard_path, exist_ok=True)
+            
+            # Save the data file
+            data_path = os.path.join(dashboard_path, "data.csv")
+            df.to_csv(data_path, index=False)
+            
+            # Save the dashboard file
+            dashboard_file = os.path.join(dashboard_path, "index.html")
+            with open(dashboard_file, "w") as f:
+                f.write(dashboard_html)
+                
+            # Save dashboard config for later reference
+            config_path = os.path.join(dashboard_path, "config.json")
+            with open(config_path, "w") as f:
+                json.dump(dashboard_config, f, indent=2)
+                
+            logger.info(f"Created dashboard at {dashboard_path}")
             
             return dashboard_id, dashboard_path
             
         except Exception as e:
             logger.error(f"Error creating dashboard: {str(e)}")
-            raise
+            raise e
     
     def _preprocess_data(self, df: pd.DataFrame, config: Dict[str, Any]) -> pd.DataFrame:
         """
@@ -238,7 +309,6 @@ else:
         # For local deployment, start a new Streamlit process
         if port is None:
             # Find an available port
-            import socket
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.bind(('', 0))
             port = s.getsockname()[1]
@@ -385,3 +455,158 @@ plotly==5.18.0
         # and return the actual URL where it's deployed.
         # For local testing, we'll just return a constructed URL.
         return f"{base_url}/dashboards/{dashboard_id}"
+    
+    def _suggest_chart_types(self, df: pd.DataFrame) -> List[Dict[str, Any]]:
+        """
+        Suggests appropriate charts based on data characteristics.
+        
+        Args:
+            df (pd.DataFrame): The data to analyze
+            
+        Returns:
+            list: List of chart configurations
+        """
+        suggested_charts = []
+        
+        # Get column types
+        numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
+        categorical_cols = df.select_dtypes(include=['object', 'category']).columns.tolist()
+        date_cols = [col for col in df.columns if pd.api.types.is_datetime64_any_dtype(df[col])]
+        
+        # If we have date columns and numeric columns, suggest time series charts
+        if date_cols and numeric_cols:
+            for date_col in date_cols[:1]:  # Limit to first date column
+                for num_col in numeric_cols[:3]:  # Limit to first 3 numeric columns
+                    suggested_charts.append({
+                        'type': 'line',
+                        'title': f'{num_col} Over Time',
+                        'x': date_col,
+                        'y': num_col
+                    })
+        
+        # If we have categorical columns and numeric columns, suggest bar charts and pie charts
+        if categorical_cols and numeric_cols:
+            for cat_col in categorical_cols[:2]:  # Limit to first 2 categorical columns
+                for num_col in numeric_cols[:2]:  # Limit to first 2 numeric columns
+                    # Bar chart for comparison
+                    suggested_charts.append({
+                        'type': 'bar',
+                        'title': f'{num_col} by {cat_col}',
+                        'x': cat_col,
+                        'y': num_col
+                    })
+                    
+                    # Pie chart for distribution
+                    if len(df[cat_col].unique()) <= 10:  # Only if not too many categories
+                        suggested_charts.append({
+                            'type': 'pie',
+                            'title': f'{num_col} Distribution by {cat_col}',
+                            'x': cat_col,
+                            'y': num_col
+                        })
+        
+        # If we have numeric columns only, suggest scatter plots for relationships
+        if len(numeric_cols) >= 2:
+            # Scatter plot for first two numeric columns
+            suggested_charts.append({
+                'type': 'scatter',
+                'title': f'Relationship between {numeric_cols[0]} and {numeric_cols[1]}',
+                'x': numeric_cols[0],
+                'y': numeric_cols[1]
+            })
+        
+        return suggested_charts
+
+    def _suggest_metrics(self, df: pd.DataFrame) -> List[Dict[str, Any]]:
+        """
+        Suggests appropriate metrics based on data characteristics.
+        
+        Args:
+            df (pd.DataFrame): The data to analyze
+            
+        Returns:
+            list: List of metric configurations
+        """
+        suggested_metrics = []
+        
+        # Get numeric columns for metrics
+        numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
+        
+        # Create sum metrics for numeric columns
+        for col in numeric_cols[:4]:  # Limit to first 4 numeric columns
+            # Format column name for display
+            display_name = col.replace('_', ' ').title()
+            
+            # Determine appropriate aggregation
+            if 'count' in col.lower() or 'quantity' in col.lower() or 'units' in col.lower():
+                agg = 'sum'
+                label = f'Total {display_name}'
+            elif 'price' in col.lower() or 'cost' in col.lower() or 'revenue' in col.lower() or 'sales' in col.lower():
+                agg = 'sum'
+                label = f'Total {display_name}'
+            elif 'rate' in col.lower() or 'ratio' in col.lower() or 'percentage' in col.lower() or 'percent' in col.lower():
+                agg = 'mean'
+                label = f'Average {display_name}'
+            else:
+                # Default to sum for other numeric columns
+                agg = 'sum'
+                label = f'Total {display_name}'
+            
+            suggested_metrics.append({
+                'column': col,
+                'label': label,
+                'aggregation': agg
+            })
+            
+            # If it makes sense, also add average metric for some columns
+            if agg == 'sum' and not ('ratio' in col.lower() or 'rate' in col.lower()):
+                suggested_metrics.append({
+                    'column': col,
+                    'label': f'Average {display_name}',
+                    'aggregation': 'mean'
+                })
+        
+        return suggested_metrics
+
+    def _suggest_filters(self, df: pd.DataFrame) -> List[Dict[str, Any]]:
+        """
+        Suggests appropriate filters based on data characteristics.
+        
+        Args:
+            df (pd.DataFrame): The data to analyze
+            
+        Returns:
+            list: List of filter configurations
+        """
+        suggested_filters = []
+        
+        # Get column types
+        categorical_cols = df.select_dtypes(include=['object', 'category']).columns.tolist()
+        date_cols = [col for col in df.columns if pd.api.types.is_datetime64_any_dtype(df[col])]
+        numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
+        
+        # Add date filters - these are usually very useful
+        for col in date_cols:
+            suggested_filters.append({
+                'type': 'date_range',
+                'column': col
+            })
+        
+        # Add categorical filters - limit to those with a reasonable number of unique values
+        for col in categorical_cols:
+            if len(df[col].unique()) <= 30:  # Avoid columns with too many unique values
+                suggested_filters.append({
+                    'type': 'categorical',
+                    'column': col
+                })
+        
+        # Add numeric range filters for select numeric columns (like price, age, etc.)
+        for col in numeric_cols:
+            # Only include numeric filters if the range makes sense (not binary values)
+            if df[col].nunique() > 5 and any(keyword in col.lower() for keyword in ['price', 'cost', 'amount', 'age', 'time', 'duration', 'score']):
+                suggested_filters.append({
+                    'type': 'numeric_range',
+                    'column': col
+                })
+        
+        return suggested_filters
