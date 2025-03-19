@@ -177,6 +177,18 @@ def display_charts(data, charts):
 
 def create_bar_chart(data, x_column, y_column, color_column, config):
     """Create a bar chart."""
+    # Create labels dictionary with proper handling of None values
+    labels = {}
+    if config.get('x_label') is not None:
+        labels[x_column] = config.get('x_label')
+    else:
+        labels[x_column] = x_column
+        
+    if config.get('y_label') is not None:
+        labels[y_column] = config.get('y_label')
+    else:
+        labels[y_column] = y_column
+    
     if color_column and color_column in data.columns:
         fig = px.bar(
             data, 
@@ -184,10 +196,7 @@ def create_bar_chart(data, x_column, y_column, color_column, config):
             y=y_column, 
             color=color_column,
             title=config.get('title', ''),
-            labels={
-                x_column: config.get('x_label', x_column),
-                y_column: config.get('y_label', y_column)
-            }
+            labels=labels
         )
     else:
         fig = px.bar(
@@ -195,10 +204,7 @@ def create_bar_chart(data, x_column, y_column, color_column, config):
             x=x_column, 
             y=y_column,
             title=config.get('title', ''),
-            labels={
-                x_column: config.get('x_label', x_column),
-                y_column: config.get('y_label', y_column)
-            }
+            labels=labels
         )
     
     return fig
@@ -206,6 +212,18 @@ def create_bar_chart(data, x_column, y_column, color_column, config):
 
 def create_line_chart(data, x_column, y_column, color_column, config):
     """Create a line chart."""
+    # Create labels dictionary with proper handling of None values
+    labels = {}
+    if config.get('x_label') is not None:
+        labels[x_column] = config.get('x_label')
+    else:
+        labels[x_column] = x_column
+        
+    if config.get('y_label') is not None:
+        labels[y_column] = config.get('y_label')
+    else:
+        labels[y_column] = y_column
+    
     if color_column and color_column in data.columns:
         fig = px.line(
             data, 
@@ -213,10 +231,7 @@ def create_line_chart(data, x_column, y_column, color_column, config):
             y=y_column, 
             color=color_column,
             title=config.get('title', ''),
-            labels={
-                x_column: config.get('x_label', x_column),
-                y_column: config.get('y_label', y_column)
-            }
+            labels=labels
         )
     else:
         fig = px.line(
@@ -224,10 +239,7 @@ def create_line_chart(data, x_column, y_column, color_column, config):
             x=x_column, 
             y=y_column,
             title=config.get('title', ''),
-            labels={
-                x_column: config.get('x_label', x_column),
-                y_column: config.get('y_label', y_column)
-            }
+            labels=labels
         )
     
     return fig
@@ -235,6 +247,18 @@ def create_line_chart(data, x_column, y_column, color_column, config):
 
 def create_scatter_chart(data, x_column, y_column, color_column, config):
     """Create a scatter chart."""
+    # Create labels dictionary with proper handling of None values
+    labels = {}
+    if config.get('x_label') is not None:
+        labels[x_column] = config.get('x_label')
+    else:
+        labels[x_column] = x_column
+        
+    if config.get('y_label') is not None:
+        labels[y_column] = config.get('y_label')
+    else:
+        labels[y_column] = y_column
+    
     if color_column and color_column in data.columns:
         fig = px.scatter(
             data, 
@@ -242,10 +266,7 @@ def create_scatter_chart(data, x_column, y_column, color_column, config):
             y=y_column, 
             color=color_column,
             title=config.get('title', ''),
-            labels={
-                x_column: config.get('x_label', x_column),
-                y_column: config.get('y_label', y_column)
-            }
+            labels=labels
         )
     else:
         fig = px.scatter(
@@ -253,10 +274,7 @@ def create_scatter_chart(data, x_column, y_column, color_column, config):
             x=x_column, 
             y=y_column,
             title=config.get('title', ''),
-            labels={
-                x_column: config.get('x_label', x_column),
-                y_column: config.get('y_label', y_column)
-            }
+            labels=labels
         )
     
     return fig
@@ -266,11 +284,14 @@ def create_pie_chart(data, names_column, values_column, config):
     """Create a pie chart."""
     agg_data = data.groupby(names_column)[values_column].sum().reset_index()
     
+    # Set title with proper handling of None
+    title = config.get('title', '')
+    
     fig = px.pie(
         agg_data, 
         names=names_column, 
         values=values_column,
-        title=config.get('title', '')
+        title=title
     )
     
     return fig 

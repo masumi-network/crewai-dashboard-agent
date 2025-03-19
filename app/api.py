@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse, FileResponse
 from pydantic import BaseModel, Field
 import os
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Union, Literal
 import uuid
 
 from . import utils
@@ -24,23 +24,49 @@ dashboard_registry = {}
 
 # Pydantic models for request validation
 class Chart(BaseModel):
-    type: str
+    type: Literal["bar", "line", "pie", "scatter", "area", "heatmap", "histogram", "box"]
     title: str
     x: str
     y: str
     color: Optional[str] = None
     x_label: Optional[str] = None
     y_label: Optional[str] = None
+    # Advanced options
+    orientation: Optional[Literal["v", "h"]] = None  # vertical or horizontal
+    aggregation: Optional[Literal["sum", "mean", "count", "min", "max"]] = None  # For grouped data
+    group_by: Optional[str] = None  # For grouping data
+    sort_by: Optional[str] = None  # For sorting data
+    ascending: Optional[bool] = True  # For sorting direction
+    limit: Optional[int] = None  # Limit number of items
+    custom_config: Optional[Dict[str, Any]] = None  # For advanced chart configuration
 
 class Metric(BaseModel):
     column: str
     label: Optional[str] = None
-    aggregation: Optional[str] = "sum"
+    aggregation: Optional[Literal["sum", "mean", "count", "min", "max", "median", "unique"]] = "sum"
+    format: Optional[str] = None  # e.g., "$,.2f" for currency
+    delta_column: Optional[str] = None  # For calculating change vs reference
+    delta_label: Optional[str] = None  # Label for delta
+    threshold: Optional[float] = None  # For conditional formatting
+    color_scale: Optional[List[str]] = None  # For custom coloring
 
 class Filter(BaseModel):
-    type: str
+    type: Literal["date_range", "categorical", "numeric_range", "text_search", "time_period", "multi_select"]
     column: str
     label: Optional[str] = None
+    default: Optional[Any] = None  # Default value
+    options: Optional[List[Any]] = None  # For categorical filters
+    hide_empty: Optional[bool] = False  # Hide empty categories
+
+class Layout(BaseModel):
+    type: Literal["standard", "sidebar", "tabs", "grid"] = "standard"
+    columns: Optional[int] = 2  # For grid layout
+    sidebar_width: Optional[int] = None  # For sidebar layout
+    tabs: Optional[List[str]] = None  # For tabs layout
+    height: Optional[int] = None  # Dashboard height
+    theme: Optional[Literal["light", "dark", "custom"]] = "light"
+    logo_url: Optional[str] = None  # Custom logo
+    custom_css: Optional[str] = None  # Custom CSS
 
 class DashboardConfig(BaseModel):
     title: str
@@ -48,6 +74,10 @@ class DashboardConfig(BaseModel):
     metrics: List[Metric] = Field(default_factory=list)
     charts: List[Chart] = Field(default_factory=list)
     filters: List[Filter] = Field(default_factory=list)
+    layout: Optional[Layout] = None
+    refresh_rate: Optional[int] = None  # Auto-refresh in seconds
+    data_processing: Optional[Dict[str, Any]] = None  # Custom data processing instructions
+    custom_elements: Optional[Dict[str, Any]] = None  # Additional custom elements
 
 class CreateDashboardRequest(BaseModel):
     data_url: str

@@ -5,6 +5,13 @@ import sys
 import os
 from pathlib import Path
 
+# Set page config first (must be first Streamlit command)
+st.set_page_config(
+    page_title="Sales Performance Dashboard",
+    page_icon="📊",
+    layout="wide"
+)
+
 # Add the parent directory to sys.path to import templates
 parent_dir = Path(__file__).parent.parent
 if str(parent_dir) not in sys.path:
@@ -39,44 +46,44 @@ CONFIG = {
             "title": "Sales by Region",
             "x": "Region",
             "y": "Sales",
-            "color": null,
-            "x_label": null,
-            "y_label": null
+            "color": None,
+            "x_label": None,
+            "y_label": None
         },
         {
             "type": "line",
             "title": "Monthly Sales Trend",
             "x": "Date",
             "y": "Sales",
-            "color": null,
-            "x_label": null,
-            "y_label": null
+            "color": None,
+            "x_label": None,
+            "y_label": None
         },
         {
             "type": "pie",
             "title": "Sales Distribution by Category",
             "x": "Category",
             "y": "Sales",
-            "color": null,
-            "x_label": null,
-            "y_label": null
+            "color": None,
+            "x_label": None,
+            "y_label": None
         }
     ],
     "filters": [
         {
             "type": "date_range",
             "column": "Date",
-            "label": null
+            "label": None
         },
         {
             "type": "categorical",
             "column": "Region",
-            "label": null
+            "label": None
         },
         {
             "type": "categorical",
             "column": "Category",
-            "label": null
+            "label": None
         }
     ]
 }
