@@ -1,0 +1,97 @@
+{
+  "title": "Data Dashboard - 2025-03-22",
+  "description": "Automatically generated dashboard for http://localhost:8080/sample_data.csv",
+  "metrics": [
+    {
+      "column": "Sales",
+      "label": "Total Sales",
+      "aggregation": "sum"
+    },
+    {
+      "column": "Sales",
+      "label": "Average Sales",
+      "aggregation": "mean"
+    },
+    {
+      "column": "Profit",
+      "label": "Total Profit",
+      "aggregation": "sum"
+    },
+    {
+      "column": "Profit",
+      "label": "Average Profit",
+      "aggregation": "mean"
+    },
+    {
+      "column": "Units",
+      "label": "Total Units",
+      "aggregation": "sum"
+    },
+    {
+      "column": "Units",
+      "label": "Average Units",
+      "aggregation": "mean"
+    }
+  ],
+  "charts": [
+    {
+      "type": "bar",
+      "title": "Sales by Date",
+      "x": "Date",
+      "y": "Sales"
+    },
+    {
+      "type": "bar",
+      "title": "Profit by Date",
+      "x": "Date",
+      "y": "Profit"
+    },
+    {
+      "type": "bar",
+      "title": "Sales by Region",
+      "x": "Region",
+      "y": "Sales"
+    },
+    {
+      "type": "pie",
+      "title": "Sales Distribution by Region",
+      "x": "Region",
+      "y": "Sales"
+    },
+    {
+      "type": "bar",
+      "title": "Profit by Region",
+      "x": "Region",
+      "y": "Profit"
+    },
+    {
+      "type": "pie",
+      "title": "Profit Distribution by Region",
+      "x": "Region",
+      "y": "Profit"
+    },
+    {
+      "type": "scatter",
+      "title": "Relationship between Sales and Profit",
+      "x": "Sales",
+      "y": "Profit"
+    }
+  ],
+  "filters": [
+    {
+      "type": "categorical",
+      "column": "Region"
+    },
+    {
+      "type": "categorical",
+      "column": "Category"
+    }
+  ],
+  "style": {
+    "theme": "colorful",
+    "layout": "standard",
+    "columns": 2,
+    "color_scheme": "default"
+  },
+  "auto_configure": true
+}

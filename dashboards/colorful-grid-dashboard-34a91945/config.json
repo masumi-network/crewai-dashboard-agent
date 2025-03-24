@@ -1,0 +1,74 @@
+{
+  "title": "Colorful Grid Dashboard",
+  "description": "Sales dashboard with colorful theme and grid layout",
+  "metrics": [
+    {
+      "column": "Sales",
+      "label": "Total Sales",
+      "aggregation": "sum"
+    },
+    {
+      "column": "Profit",
+      "label": "Total Profit",
+      "aggregation": "sum"
+    },
+    {
+      "column": "Units",
+      "label": "Units Sold",
+      "aggregation": "sum"
+    }
+  ],
+  "charts": [
+    {
+      "type": "bar",
+      "title": "Sales by Region",
+      "x": "Region",
+      "y": "Sales",
+      "color": null,
+      "x_label": null,
+      "y_label": null
+    },
+    {
+      "type": "line",
+      "title": "Monthly Sales Trend",
+      "x": "Date",
+      "y": "Sales",
+      "color": null,
+      "x_label": null,
+      "y_label": null
+    },
+    {
+      "type": "pie",
+      "title": "Sales Distribution by Category",
+      "x": "Category",
+      "y": "Sales",
+      "color": null,
+      "x_label": null,
+      "y_label": null
+    }
+  ],
+  "filters": [
+    {
+      "type": "date_range",
+      "column": "Date",
+      "label": null
+    },
+    {
+      "type": "categorical",
+      "column": "Region",
+      "label": null
+    },
+    {
+      "type": "categorical",
+      "column": "Category",
+      "label": null
+    }
+  ],
+  "style": {
+    "theme": "colorful",
+    "layout": "grid",
+    "columns": 3,
+    "color_scheme": "default"
+  },
+  "auto_configure": true
+}

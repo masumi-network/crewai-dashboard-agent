@@ -1,0 +1,74 @@
+{
+  "title": "Sales Performance Dashboard",
+  "description": "Overview of sales performance by region and product category",
+  "metrics": [
+    {
+      "column": "Sales",
+      "label": "Total Sales",
+      "aggregation": "sum"
+    },
+    {
+      "column": "Profit",
+      "label": "Total Profit",
+      "aggregation": "sum"
+    },
+    {
+      "column": "Units",
+      "label": "Units Sold",
+      "aggregation": "sum"
+    }
+  ],
+  "charts": [
+    {
+      "type": "bar",
+      "title": "Sales by Region",
+      "x": "Region",
+      "y": "Sales",
+      "color": null,
+      "x_label": "Region",
+      "y_label": "Sales ($)"
+    },
+    {
+      "type": "line",
+      "title": "Monthly Sales Trend",
+      "x": "Date",
+      "y": "Sales",
+      "color": null,
+      "x_label": "Month",
+      "y_label": "Sales ($)"
+    },
+    {
+      "type": "pie",
+      "title": "Sales Distribution by Category",
+      "x": "Category",
+      "y": "Sales",
+      "color": null,
+      "x_label": null,
+      "y_label": null
+    }
+  ],
+  "filters": [
+    {
+      "type": "date_range",
+      "column": "Date",
+      "label": null
+    },
+    {
+      "type": "categorical",
+      "column": "Region",
+      "label": null
+    },
+    {
+      "type": "categorical",
+      "column": "Category",
+      "label": null
+    }
+  ],
+  "style": {
+    "theme": "default",
+    "layout": "standard",
+    "columns": 2,
+    "color_scheme": "default"
+  },
+  "auto_configure": true
+}

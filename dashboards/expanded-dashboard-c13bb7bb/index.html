@@ -1,0 +1,231 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Expanded Dashboard</title>
+            <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+            <style>
+                
+                body {
+                    background-color: #ffffff;
+                    color: #333333;
+                    font-family: 'Helvetica Neue', Arial, sans-serif;
+                    margin: 0;
+                    padding: 20px;
+                }
+                header {
+                    background-color: #4285f4;
+                    color: white;
+                    padding: 20px;
+                    border-radius: 8px;
+                    margin-bottom: 20px;
+                }
+                header h1 {
+                    margin-top: 0;
+                }
+                header p {
+                    margin-bottom: 0;
+                    opacity: 0.9;
+                }
+                .dashboard-container {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                }
+                .metric-box {
+                    background-color: #f8f9fa;
+                    border: 1px solid #e9ecef;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                }
+                .metric-label {
+                    font-size: 14px;
+                    color: #6c757d;
+                    margin-bottom: 5px;
+                }
+                .metric-value {
+                    color: #4285f4;
+                    font-size: 24px;
+                    font-weight: bold;
+                }
+                .chart-container {
+                    background-color: #f8f9fa;
+                    border: 1px solid #e9ecef;
+                    padding: 15px;
+                }
+                .chart-title {
+                    font-size: 16px;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                }
+                .filters-section {
+                    background-color: #f8f9fa;
+                    border: 1px solid #e9ecef;
+                }
+                .filter-group {
+                    margin-bottom: 10px;
+                }
+                .filter-label {
+                    font-size: 14px;
+                    margin-bottom: 5px;
+                }
+                .filter-input {
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid #ced4da;
+                    border-radius: 4px;
+                }
+            
+                
+                /* Layout styles */
+                .dashboard-layout {
+                    display: flex;
+                    gap: 20px;
+                }
+                
+                .sidebar {
+                    flex: 0 0 250px;
+                }
+                
+                .main-content {
+                    flex: 1;
+                }
+                
+                /* Grid layout */
+                .grid-layout {
+                    display: grid;
+                    gap: 20px;
+                }
+                
+                /* Compact layout */
+                .metrics-container.compact {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                }
+                
+                .metrics-container.compact .metric-box {
+                    flex: 1 0 150px;
+                    max-width: 200px;
+                    padding: 10px;
+                }
+                
+                /* Expanded layout */
+                .metrics-container.expanded .metric-box,
+                .charts-container.expanded .chart-container {
+                    margin-bottom: 20px;
+                    width: 100%;
+                }
+                
+                /* Standard layout for metrics */
+                .metrics-container .metric-box {
+                    padding: 15px;
+                    margin-bottom: 15px;
+                    border-radius: 8px;
+                }
+                
+                /* Chart containers */
+                .chart-container {
+                    margin-bottom: 25px;
+                    padding: 15px;
+                    border-radius: 8px;
+                }
+                
+                /* Filter section */
+                .filters-section {
+                    margin-bottom: 20px;
+                    padding: 15px;
+                    border-radius: 8px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="dashboard-container">
+                <header>
+                    <h1>Expanded Dashboard</h1>
+                    <p>Sales dashboard with default theme and expanded layout</p>
+                </header>
+                
+                <div class="filters-section"><h3>Filters</h3>
+                <div class="filter-group">
+                    <div class="filter-label">None Range</div>
+                    <div class="date-range-filter">
+                        <input type="date" name="filter_Date_start" class="filter-input" 
+                               value="2023-01-01" min="2023-01-01" max="2023-06-08">
+                        <span>to</span>
+                        <input type="date" name="filter_Date_end" class="filter-input" 
+                               value="2023-06-08" min="2023-01-01" max="2023-06-08">
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <div class="filter-label">None</div>
+                    <select name="filter_Region" class="filter-input">
+                        <option value="">All None</option>
+                        <option value="North">North</option><option value="South">South</option><option value="East">East</option><option value="West">West</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <div class="filter-label">None</div>
+                    <select name="filter_Category" class="filter-input">
+                        <option value="">All None</option>
+                        <option value="Electronics">Electronics</option><option value="Furniture">Furniture</option><option value="Office Supplies">Office Supplies</option><option value="Home">Home</option><option value="Clothing">Clothing</option>
+                    </select>
+                </div>
+                </div>
+                
+                
+                <div class="dashboard-content">
+                    <div class="metrics-container expanded">
+                <div class="metric-box">
+                    <div class="metric-label">Total Sales</div>
+                    <div class="metric-value">22.3K</div>
+                </div>
+            
+                <div class="metric-box">
+                    <div class="metric-label">Total Profit</div>
+                    <div class="metric-value">6.5K</div>
+                </div>
+            
+                <div class="metric-box">
+                    <div class="metric-label">Units Sold</div>
+                    <div class="metric-value">574</div>
+                </div>
+            </div>
+                    <div class="charts-container expanded">
+                <div class="chart-container">
+                    <div class="chart-title">Sales by Region</div>
+                    <div>                            <div id="583735b8-6014-409f-9ae2-825e6385739e" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("583735b8-6014-409f-9ae2-825e6385739e")) {                    Plotly.newPlot(                        "583735b8-6014-409f-9ae2-825e6385739e",                        [{"hovertemplate":"Region=%{x}\u003cbr\u003eSales=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"","marker":{"color":"#636EFA","pattern":{"shape":""}},"name":"","orientation":"v","showlegend":false,"textposition":"auto","x":["North","South","East","West","North","South","East","West","North","South","East","West","East","West","North","South","North","East","West","North","South","South","East","West","North","South","East","West","North","South","East","West","North","South","East","West","North","South","East","West","North","South","East","West","North","South","East","West","North","South","East","West","North","South","East","West","North","South","East","West","North","South","East","West","North","South","East","West"],"xaxis":"x","y":{"dtype":"f8","bdata":"AAAAAADCkkAAAAAAACx8QAAAAAAA0FJAAAAAAAAAiUAAAAAAAMKSQAAAAAAAgDlAAAAAAADAgkAAAAAAAOx1QAAAAAAAgC5AAAAAAACWikBmZmZmZlZ0QAAAAAAAUIRAAAAAAABwl0AAAAAAAEA+QAAAAAAAWG9AAAAAAAAAeUCamZmZmTlsQAAAAAAAwEZAAAAAAABQX0AAAAAAADBxQAAAAAAAAClAzczMzMw0gUAzMzMzMxNeQAAAAAAAM5FAAAAAAAAAFUAAAAAAAMBiQAAAAAAA4EtAAAAAAACAMkDNzMzMzHxjQAAAAAAAsG5AAAAAAADkdUBmZmZmZoZxQDMzMzMzk2ZAZmZmZmaChkAAAAAAACx8QM3MzMzMXGBAAAAAAAAIdEAzMzMzMzNxQM3MzMzMbGhAMzMzMzPTYkCamZmZmYlrQAAAAAAAJoJAMzMzMzPzRkAAAAAAAGBQQAAAAAAA4FdAZmZmZmaChkAAAAAAACx8QM3MzMzMXGBAAAAAAAAIdEAzMzMzMzNxQM3MzMzMbGhAMzMzMzPTYkCamZmZmYlrQAAAAAAAJoJAMzMzMzPzRkAAAAAAAGBQQAAAAAAA4FdAZmZmZmaChkAAAAAAACx8QM3MzMzMXGBAAAAAAAAIdEAzMzMzMzNxQM3MzMzMbGhAMzMzMzPTYkCamZmZmYlrQAAAAAAAJoJAMzMzMzPzRkAAAAAAAGBQQA=="},"yaxis":"y","type":"bar"}],                        {"template":{"data":{"candlestick":[{"decreasing":{"line":{"color":"#000033"}},"increasing":{"line":{"color":"#000032"}},"type":"candlestick"}],"contourcarpet":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"contourcarpet"}],"contour":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"contour"}],"heatmap":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"heatmap"}],"histogram2d":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"histogram2d"}],"icicle":[{"textfont":{"color":"white"},"type":"icicle"}],"sankey":[{"textfont":{"color":"#000036"},"type":"sankey"}],"scatter":[{"marker":{"line":{"width":0}},"type":"scatter"}],"table":[{"cells":{"fill":{"color":"#000038"},"font":{"color":"#000037"},"line":{"color":"#000039"}},"header":{"fill":{"color":"#000040"},"font":{"color":"#000036"},"line":{"color":"#000039"}},"type":"table"}],"waterfall":[{"connector":{"line":{"color":"#000036","width":2}},"decreasing":{"marker":{"color":"#000033"}},"increasing":{"marker":{"color":"#000032"}},"totals":{"marker":{"color":"#000034"}},"type":"waterfall"}]},"layout":{"coloraxis":{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]]},"colorscale":{"diverging":[[0.0,"#000021"],[0.1,"#000022"],[0.2,"#000023"],[0.3,"#000024"],[0.4,"#000025"],[0.5,"#000026"],[0.6,"#000027"],[0.7,"#000028"],[0.8,"#000029"],[0.9,"#000030"],[1.0,"#000031"]],"sequential":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"sequentialminus":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]]},"colorway":["#000001","#000002","#000003","#000004","#000005","#000006","#000007","#000008","#000009","#000010"]}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"title":{"text":"Region"}},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"Sales"}},"legend":{"tracegroupgap":0},"title":{"text":"Sales by Region"},"barmode":"relative","margin":{"l":40,"r":40,"t":50,"b":40},"height":400},                        {"responsive": true}                    )                };            </script>        </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">Monthly Sales Trend</div>
+                    <div>                            <div id="8c76dacf-ce0d-49d0-969f-88e57b997b2b" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("8c76dacf-ce0d-49d0-969f-88e57b997b2b")) {                    Plotly.newPlot(                        "8c76dacf-ce0d-49d0-969f-88e57b997b2b",                        [{"hovertemplate":"Date=%{x}\u003cbr\u003eSales=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"","line":{"color":"#636EFA","dash":"solid"},"marker":{"symbol":"circle"},"mode":"lines","name":"","orientation":"v","showlegend":false,"x":["2023-01-01","2023-01-02","2023-01-03","2023-01-04","2023-01-05","2023-01-06","2023-01-07","2023-01-08","2023-01-09","2023-01-10","2023-01-15","2023-01-20","2023-02-01","2023-02-02","2023-02-03","2023-02-04","2023-02-05","2023-02-06","2023-02-07","2023-02-08","2023-02-09","2023-02-10","2023-02-15","2023-02-20","2023-03-01","2023-03-02","2023-03-03","2023-03-04","2023-03-05","2023-03-06","2023-03-07","2023-03-08","2023-03-09","2023-03-10","2023-03-15","2023-03-16","2023-03-17","2023-03-18","2023-03-19","2023-03-20","2023-04-05","2023-04-06","2023-04-07","2023-04-08","2023-04-09","2023-04-10","2023-04-15","2023-04-16","2023-04-17","2023-04-18","2023-04-19","2023-04-20","2023-05-05","2023-05-06","2023-05-07","2023-05-08","2023-05-09","2023-05-10","2023-05-15","2023-05-16","2023-05-17","2023-05-18","2023-05-19","2023-05-20","2023-06-05","2023-06-06","2023-06-07","2023-06-08"],"xaxis":"x","y":{"dtype":"f8","bdata":"AAAAAADCkkAAAAAAACx8QAAAAAAA0FJAAAAAAAAAiUAAAAAAAMKSQAAAAAAAgDlAAAAAAADAgkAAAAAAAOx1QAAAAAAAgC5AAAAAAACWikBmZmZmZlZ0QAAAAAAAUIRAAAAAAABwl0AAAAAAAEA+QAAAAAAAWG9AAAAAAAAAeUCamZmZmTlsQAAAAAAAwEZAAAAAAABQX0AAAAAAADBxQAAAAAAAAClAzczMzMw0gUAzMzMzMxNeQAAAAAAAM5FAAAAAAAAAFUAAAAAAAMBiQAAAAAAA4EtAAAAAAACAMkDNzMzMzHxjQAAAAAAAsG5AAAAAAADkdUBmZmZmZoZxQDMzMzMzk2ZAZmZmZmaChkAAAAAAACx8QM3MzMzMXGBAAAAAAAAIdEAzMzMzMzNxQM3MzMzMbGhAMzMzMzPTYkCamZmZmYlrQAAAAAAAJoJAMzMzMzPzRkAAAAAAAGBQQAAAAAAA4FdAZmZmZmaChkAAAAAAACx8QM3MzMzMXGBAAAAAAAAIdEAzMzMzMzNxQM3MzMzMbGhAMzMzMzPTYkCamZmZmYlrQAAAAAAAJoJAMzMzMzPzRkAAAAAAAGBQQAAAAAAA4FdAZmZmZmaChkAAAAAAACx8QM3MzMzMXGBAAAAAAAAIdEAzMzMzMzNxQM3MzMzMbGhAMzMzMzPTYkCamZmZmYlrQAAAAAAAJoJAMzMzMzPzRkAAAAAAAGBQQA=="},"yaxis":"y","type":"scatter"}],                        {"template":{"data":{"candlestick":[{"decreasing":{"line":{"color":"#000033"}},"increasing":{"line":{"color":"#000032"}},"type":"candlestick"}],"contourcarpet":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"contourcarpet"}],"contour":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"contour"}],"heatmap":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"heatmap"}],"histogram2d":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"histogram2d"}],"icicle":[{"textfont":{"color":"white"},"type":"icicle"}],"sankey":[{"textfont":{"color":"#000036"},"type":"sankey"}],"scatter":[{"marker":{"line":{"width":0}},"type":"scatter"}],"table":[{"cells":{"fill":{"color":"#000038"},"font":{"color":"#000037"},"line":{"color":"#000039"}},"header":{"fill":{"color":"#000040"},"font":{"color":"#000036"},"line":{"color":"#000039"}},"type":"table"}],"waterfall":[{"connector":{"line":{"color":"#000036","width":2}},"decreasing":{"marker":{"color":"#000033"}},"increasing":{"marker":{"color":"#000032"}},"totals":{"marker":{"color":"#000034"}},"type":"waterfall"}]},"layout":{"coloraxis":{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]]},"colorscale":{"diverging":[[0.0,"#000021"],[0.1,"#000022"],[0.2,"#000023"],[0.3,"#000024"],[0.4,"#000025"],[0.5,"#000026"],[0.6,"#000027"],[0.7,"#000028"],[0.8,"#000029"],[0.9,"#000030"],[1.0,"#000031"]],"sequential":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"sequentialminus":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]]},"colorway":["#000001","#000002","#000003","#000004","#000005","#000006","#000007","#000008","#000009","#000010"]}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"title":{"text":"Date"}},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"Sales"}},"legend":{"tracegroupgap":0},"title":{"text":"Monthly Sales Trend"},"margin":{"l":40,"r":40,"t":50,"b":40},"height":400},                        {"responsive": true}                    )                };            </script>        </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">Sales Distribution by Category</div>
+                    <div>                            <div id="75958f29-a4c6-410c-9cc6-f1df73484458" class="plotly-graph-div" style="height:400px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("75958f29-a4c6-410c-9cc6-f1df73484458")) {                    Plotly.newPlot(                        "75958f29-a4c6-410c-9cc6-f1df73484458",                        [{"domain":{"x":[0.0,1.0],"y":[0.0,1.0]},"hovertemplate":"Category=%{label}\u003cbr\u003eSales=%{value}\u003cextra\u003e\u003c\u002fextra\u003e","labels":["Clothing","Electronics","Furniture","Home","Office Supplies"],"legendgroup":"","name":"","showlegend":true,"values":{"dtype":"f8","bdata":"zczMzMxyrUDNzMzMTF\u002fEQAAAAACAsKdAzczMzIzWskAAAAAAAIBsQA=="},"type":"pie"}],                        {"template":{"data":{"candlestick":[{"decreasing":{"line":{"color":"#000033"}},"increasing":{"line":{"color":"#000032"}},"type":"candlestick"}],"contourcarpet":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"contourcarpet"}],"contour":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"contour"}],"heatmap":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"heatmap"}],"histogram2d":[{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"type":"histogram2d"}],"icicle":[{"textfont":{"color":"white"},"type":"icicle"}],"sankey":[{"textfont":{"color":"#000036"},"type":"sankey"}],"scatter":[{"marker":{"line":{"width":0}},"type":"scatter"}],"table":[{"cells":{"fill":{"color":"#000038"},"font":{"color":"#000037"},"line":{"color":"#000039"}},"header":{"fill":{"color":"#000040"},"font":{"color":"#000036"},"line":{"color":"#000039"}},"type":"table"}],"waterfall":[{"connector":{"line":{"color":"#000036","width":2}},"decreasing":{"marker":{"color":"#000033"}},"increasing":{"marker":{"color":"#000032"}},"totals":{"marker":{"color":"#000034"}},"type":"waterfall"}]},"layout":{"coloraxis":{"colorscale":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]]},"colorscale":{"diverging":[[0.0,"#000021"],[0.1,"#000022"],[0.2,"#000023"],[0.3,"#000024"],[0.4,"#000025"],[0.5,"#000026"],[0.6,"#000027"],[0.7,"#000028"],[0.8,"#000029"],[0.9,"#000030"],[1.0,"#000031"]],"sequential":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]],"sequentialminus":[[0.0,"#000011"],[0.1111111111111111,"#000012"],[0.2222222222222222,"#000013"],[0.3333333333333333,"#000014"],[0.4444444444444444,"#000015"],[0.5555555555555556,"#000016"],[0.6666666666666666,"#000017"],[0.7777777777777778,"#000018"],[0.8888888888888888,"#000019"],[1.0,"#000020"]]},"colorway":["#000001","#000002","#000003","#000004","#000005","#000006","#000007","#000008","#000009","#000010"]}},"legend":{"tracegroupgap":0},"title":{"text":"Sales Distribution by Category"},"piecolorway":["#636EFA","#EF553B","#00CC96","#AB63FA","#FFA15A","#19D3F3","#FF6692","#B6E880","#FF97FF","#FECB52"],"margin":{"l":40,"r":40,"t":50,"b":40},"height":400},                        {"responsive": true}                    )                };            </script>        </div>
+                </div>
+                </div>
+                </div>
+            
+            </div>
+            
+            <script>
+                // Dashboard initialization and filter handling
+                $(document).ready(function() {
+                    // Add filter event handlers
+                    // This is a simplified example - in a real implementation, 
+                    // you'd have more robust filtering logic
+                    $('.filter-input').on('change', function() {
+                        // In a real implementation, this would apply the filters
+                        console.log('Filter changed:', $(this).attr('name'), $(this).val());
+                    });
+                });
+            </script>
+        </body>
+        </html>
+        
